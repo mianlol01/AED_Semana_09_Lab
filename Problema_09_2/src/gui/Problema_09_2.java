@@ -1,5 +1,8 @@
 package gui;
 
+import clase.Docente;
+import arreglo.ArregloDocentes;
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -16,11 +19,12 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
+import javax.swing.UIManager;
 
 public class Problema_09_2 extends JFrame implements ActionListener {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private JPanel contentPane;
 	private JLabel lblCodigo;
 	private JLabel lblNombre;
@@ -28,16 +32,16 @@ public class Problema_09_2 extends JFrame implements ActionListener {
 	private JLabel lblTarifa;
 	private JTextField txtCodigo;
 	private JTextField txtNombre;
-	private JTextField txtHoras;	
+	private JTextField txtHoras;
 	private JTextField txtTarifa;
-	private JButton btnAdicionar;	
+	private JButton btnAdicionar;
 	private JButton btnReportar;
 	private JScrollPane scrollPaneA;
 	private JScrollPane scrollPaneB;
 	private JTextArea txtS;
 	private JTable tblTabla;
 	private DefaultTableModel modelo;
-	
+
 	/**
 	 * Launch the application.
 	 */
@@ -45,10 +49,10 @@ public class Problema_09_2 extends JFrame implements ActionListener {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 					Problema_09_2 frame = new Problema_09_2();
 					frame.setVisible(true);
-				}
-				catch (Exception e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -66,38 +70,38 @@ public class Problema_09_2 extends JFrame implements ActionListener {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-	
+
 		lblCodigo = new JLabel("C\u00F3digo");
 		lblCodigo.setBounds(10, 11, 40, 28);
 		contentPane.add(lblCodigo);
-		
+
 		lblNombre = new JLabel("Nombre");
 		lblNombre.setBounds(120, 11, 50, 28);
-		contentPane.add(lblNombre);	
-		
+		contentPane.add(lblNombre);
+
 		lblHoras = new JLabel("Horas");
 		lblHoras.setBounds(255, 11, 40, 28);
-		contentPane.add(lblHoras);	
-		
+		contentPane.add(lblHoras);
+
 		lblTarifa = new JLabel("Tarifa");
 		lblTarifa.setBounds(356, 11, 40, 28);
-		contentPane.add(lblTarifa);	
-		
+		contentPane.add(lblTarifa);
+
 		txtCodigo = new JTextField();
 		txtCodigo.setBounds(54, 11, 40, 28);
 		contentPane.add(txtCodigo);
 		txtCodigo.setColumns(10);
-		
+
 		txtNombre = new JTextField();
 		txtNombre.setBounds(170, 11, 60, 28);
 		contentPane.add(txtNombre);
 		txtNombre.setColumns(10);
-		
+
 		txtHoras = new JTextField();
 		txtHoras.setBounds(295, 11, 40, 28);
 		contentPane.add(txtHoras);
 		txtHoras.setColumns(10);
-		
+
 		txtTarifa = new JTextField();
 		txtTarifa.setBounds(402, 11, 40, 28);
 		contentPane.add(txtTarifa);
@@ -107,22 +111,22 @@ public class Problema_09_2 extends JFrame implements ActionListener {
 		btnAdicionar.addActionListener(this);
 		btnAdicionar.setBounds(450, 50, 155, 23);
 		contentPane.add(btnAdicionar);
-		
+
 		btnReportar = new JButton("Reportar");
 		btnReportar.setBounds(450, 75, 155, 23);
 		btnReportar.addActionListener(this);
 		contentPane.add(btnReportar);
-		
+
 		scrollPaneA = new JScrollPane();
 		scrollPaneA.setBounds(10, 50, 432, 200);
 		contentPane.add(scrollPaneA);
-		
+
 		tblTabla = new JTable();
 		tblTabla.setFillsViewportHeight(true);
 		scrollPaneA.setViewportView(tblTabla);
 
 		modelo = new DefaultTableModel();
-		modelo.addColumn("código");
+		modelo.addColumn("cï¿½digo");
 		modelo.addColumn("nombre");
 		modelo.addColumn("horas");
 		modelo.addColumn("tarifa");
@@ -132,13 +136,16 @@ public class Problema_09_2 extends JFrame implements ActionListener {
 		scrollPaneB = new JScrollPane();
 		scrollPaneB.setBounds(10, 250, 432, 100);
 		contentPane.add(scrollPaneB);
-		
+
 		txtS = new JTextArea();
 		txtS.setFont(new Font("Monospaced", Font.PLAIN, 13));
 		scrollPaneB.setViewportView(txtS);
-		
-		listar();		
+
+		listar();
 	}
+
+	ArregloDocentes ad = new ArregloDocentes();
+
 	public void actionPerformed(ActionEvent arg0) {
 		if (arg0.getSource() == btnReportar) {
 			actionPerformedBtnReportar(arg0);
@@ -147,25 +154,42 @@ public class Problema_09_2 extends JFrame implements ActionListener {
 			actionPerformedBtnAdicionar(arg0);
 		}
 	}
-	
-	//  Declaración global
-	
+
+	// Declaraciï¿½n global
+
 	protected void actionPerformedBtnAdicionar(ActionEvent arg0) {
-		/**
-		 * Agrega un nuevo docente
-		 */	
+		try {
 
+			int codigo = leerCodigo();
+			String nombre = leerNombre();
+			int horas = leerHoras();
+			double tarifa = leerTarifa();
+
+			Docente nuevo = new Docente(codigo, nombre, horas, tarifa);
+			ad.adicionar(nuevo);
+			listar();
+			limpieza();
+
+		} catch (Exception e) {
+			mensaje("error de ingreso");
+		}
 	}
-	protected void actionPerformedBtnReportar(ActionEvent arg0) {
-		/**
-		 * Visualiza un reporte
-		 */
 
-  	}
-	//  Métodos tipo void (sin parámetros)
+	protected void actionPerformedBtnReportar(ActionEvent arg0) {
+		txtS.setText("");
+		
+        imprimir("Sueldo promedio: " + ad.sueldoPromedio());
+        imprimir("Sueldo mayor: " + ad.sueldoMayor());
+        imprimir("Sueldo menor: " + ad.sueldoMenor());
+        imprimir("Tarifa mayor: " + ad.tarifaMayor());
+        imprimir("Tarifa menor: " + ad.tarifaMenor());
+	}
+
+	// Mï¿½todos tipo void (sin parï¿½metros)
 	void imprimir() {
 		imprimir("");
 	}
+
 	void limpieza() {
 		txtCodigo.setText("");
 		txtNombre.setText("");
@@ -174,29 +198,42 @@ public class Problema_09_2 extends JFrame implements ActionListener {
 		txtS.setText("");
 		txtCodigo.requestFocus();
 	}
-   	void listar() {
+
+	void listar() {
 		modelo.setRowCount(0);
+		
+		for (int i = 0; i < ad.tamanio(); i++) {
+			Object[] fila = { ad.obtener(i).getCodigo(), ad.obtener(i).getNombre(), ad.obtener(i).getHoras(),
+					ad.obtener(i).getTarifa(), ad.obtener(i).sueldo() };
+			modelo.addRow(fila);
+		}
 
 	}
-	//  Métodos tipo void (con parámetros)
+
+	// Mï¿½todos tipo void (con parï¿½metros)
 	void imprimir(String s) {
 		txtS.append(s + "\n");
 	}
+
 	void mensaje(String s) {
 		JOptionPane.showMessageDialog(this, s);
-	}		
-	//  Métodos que retornan valor (sin parámetros)
+	}
+
+	// Mï¿½todos que retornan valor (sin parï¿½metros)
 	int leerCodigo() {
 		return Integer.parseInt(txtCodigo.getText().trim());
 	}
+
 	String leerNombre() {
 		return txtNombre.getText().trim();
 	}
+
 	int leerHoras() {
 		return Integer.parseInt(txtHoras.getText().trim());
 	}
+
 	double leerTarifa() {
 		return Double.parseDouble(txtTarifa.getText().trim());
 	}
-	
+
 }

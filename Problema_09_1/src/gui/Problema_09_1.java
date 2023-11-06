@@ -161,17 +161,19 @@ public class Problema_09_1 extends JFrame implements ActionListener {
 		 * Adiciona un nuevo alumno
 		 */
 		try {
-			
+
 			int codigo = leerCodigo();
 			String nombre = leerNombre();
 			int nota1 = leerNota1();
 			int nota2 = leerNota2();
-			if(nota1 >= 0 && nota1 <=20 && nota2 >= 0 && nota2 <=20) {
-			Alumno nuevo = new Alumno(codigo, nombre, nota1, nota2);
-			aa.adicionar(nuevo);
-			listar();
-			limpieza();}
-			else {mensaje("error de ingreso");}
+			if (nota1 >= 0 && nota1 <= 20 && nota2 >= 0 && nota2 <= 20) {
+				Alumno nuevo = new Alumno(codigo, nombre, nota1, nota2);
+				aa.adicionar(nuevo);
+				listar();
+				limpieza();
+			} else {
+				mensaje("error de ingreso");
+			}
 		} catch (Exception e) {
 			mensaje("error de ingreso");
 		}
@@ -184,6 +186,10 @@ public class Problema_09_1 extends JFrame implements ActionListener {
 		txtS.setText("");
 		imprimir("cantidad de alumnos :  " + aa.tamanio());
 		imprimir("cantidad de aprobados :  " + aa.cantAprobados());
+		imprimir("Nombre del primer alumno desaprobado: " + aa.nombrePrimerDesaprobado());
+		imprimir("Nombre del último alumno aprobado: " + aa.nombreUltimoAprobado());
+		imprimir("Nombre del segundo alumno desaprobado: " + aa.nombreSegundoDesaprobado());
+		imprimir("Nombre del penúltimo alumno aprobado: " + aa.nombrePenultimoAprobado());
 	}
 
 	// M�todos tipo void (sin par�metros)
