@@ -1,5 +1,8 @@
 package gui;
 
+import clase.Factura;
+import arreglo.ArregloFacturas;
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -13,15 +16,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.UIManager;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
 
 public class Propuesto_09_1 extends JFrame implements ActionListener {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private JPanel contentPane;
 	private JLabel lblRuc;
 	private JLabel lblEmpresa;
@@ -29,16 +33,16 @@ public class Propuesto_09_1 extends JFrame implements ActionListener {
 	private JLabel lblPrecio;
 	private JTextField txtRuc;
 	private JTextField txtEmpresa;
-	private JTextField txtUnidades;	
+	private JTextField txtUnidades;
 	private JTextField txtPrecio;
-	private JButton btnAdicionar;	
+	private JButton btnAdicionar;
 	private JButton btnReportar;
 	private JScrollPane scrollPaneA;
 	private JScrollPane scrollPaneB;
 	private JTextArea txtS;
 	private JTable tblTabla;
 	private DefaultTableModel modelo;
-	
+
 	/**
 	 * Launch the application.
 	 */
@@ -46,10 +50,10 @@ public class Propuesto_09_1 extends JFrame implements ActionListener {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 					Propuesto_09_1 frame = new Propuesto_09_1();
 					frame.setVisible(true);
-				}
-				catch (Exception e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -67,38 +71,38 @@ public class Propuesto_09_1 extends JFrame implements ActionListener {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-	
+
 		lblRuc = new JLabel("RUC");
 		lblRuc.setBounds(10, 11, 40, 28);
 		contentPane.add(lblRuc);
-		
+
 		lblEmpresa = new JLabel("Empresa");
 		lblEmpresa.setBounds(123, 11, 60, 28);
-		contentPane.add(lblEmpresa);	
-		
+		contentPane.add(lblEmpresa);
+
 		lblUnidades = new JLabel("Unidades");
 		lblUnidades.setBounds(250, 11, 60, 28);
 		contentPane.add(lblUnidades);
-		
+
 		lblPrecio = new JLabel("Precio");
 		lblPrecio.setBounds(360, 11, 40, 28);
-		contentPane.add(lblPrecio);		
-		
+		contentPane.add(lblPrecio);
+
 		txtRuc = new JTextField();
 		txtRuc.setBounds(40, 11, 70, 28);
 		contentPane.add(txtRuc);
 		txtRuc.setColumns(10);
-		
+
 		txtEmpresa = new JTextField();
 		txtEmpresa.setBounds(180, 11, 60, 28);
 		contentPane.add(txtEmpresa);
 		txtEmpresa.setColumns(10);
-		
+
 		txtUnidades = new JTextField();
 		txtUnidades.setBounds(308, 11, 40, 28);
 		contentPane.add(txtUnidades);
 		txtUnidades.setColumns(10);
-		
+
 		txtPrecio = new JTextField();
 		txtPrecio.setBounds(402, 11, 40, 28);
 		contentPane.add(txtPrecio);
@@ -108,16 +112,16 @@ public class Propuesto_09_1 extends JFrame implements ActionListener {
 		btnAdicionar.addActionListener(this);
 		btnAdicionar.setBounds(450, 50, 155, 23);
 		contentPane.add(btnAdicionar);
-		
+
 		btnReportar = new JButton("Reportar");
 		btnReportar.setBounds(450, 75, 155, 23);
 		btnReportar.addActionListener(this);
 		contentPane.add(btnReportar);
-		
+
 		scrollPaneA = new JScrollPane();
 		scrollPaneA.setBounds(10, 50, 432, 200);
 		contentPane.add(scrollPaneA);
-		
+
 		tblTabla = new JTable();
 		tblTabla.setFillsViewportHeight(true);
 		scrollPaneA.setViewportView(tblTabla);
@@ -133,13 +137,14 @@ public class Propuesto_09_1 extends JFrame implements ActionListener {
 		scrollPaneB = new JScrollPane();
 		scrollPaneB.setBounds(10, 250, 432, 100);
 		contentPane.add(scrollPaneB);
-		
+
 		txtS = new JTextArea();
 		txtS.setFont(new Font("Monospaced", Font.PLAIN, 13));
 		scrollPaneB.setViewportView(txtS);
-		
-		listar();		
+
+		listar();
 	}
+
 	public void actionPerformed(ActionEvent arg0) {
 		if (arg0.getSource() == btnReportar) {
 			actionPerformedBtnReportar(arg0);
@@ -148,25 +153,41 @@ public class Propuesto_09_1 extends JFrame implements ActionListener {
 			actionPerformedBtnAdicionar(arg0);
 		}
 	}
-	
-	//  Declaración global
-	
+
+	ArregloFacturas af = new ArregloFacturas();
+
 	protected void actionPerformedBtnAdicionar(ActionEvent arg0) {
-		/**
-		 * Agrega una nueva factura
-		 */	
+		try {
 
+			String ruc = leerRuc();
+			String empresa = leerEmpresa();
+			int unidades = leerUnidades();
+			double precioUnitario = leerPrecio();
+
+			Factura nuevo = new Factura(ruc, empresa, unidades, precioUnitario);
+			af.adicionar(nuevo);
+			listar();
+			limpieza();
+
+		} catch (Exception e) {
+			mensaje("error de ingreso");
+		}
 	}
-	protected void actionPerformedBtnReportar(ActionEvent arg0) {
-		/**
-		 * Visualiza un reporte
-		 */
 
-  	}
-	//  Métodos tipo void (sin parámetros)
+	protected void actionPerformedBtnReportar(ActionEvent arg0) {
+		imprimir("Suma de todos los importes facturados: " + af.sumaImportesFacturados());
+		imprimir("Importe promedio facturado: " + af.importePromedioFacturado());
+		imprimir("Menor importe facturado: " + af.importeMenorFacturado());
+		imprimir("Mayor importe facturado: " + af.importeMayorFacturado());
+		imprimir("Nombre de la primera empresa con importe menor al promedio: "
+				+ af.primeraEmpresaConImporteMenorAlPromedio());
+	}
+
+	// Mï¿½todos tipo void (sin parï¿½metros)
 	void imprimir() {
 		imprimir("");
 	}
+
 	void limpieza() {
 		txtRuc.setText("");
 		txtEmpresa.setText("");
@@ -175,29 +196,42 @@ public class Propuesto_09_1 extends JFrame implements ActionListener {
 		txtS.setText("");
 		txtRuc.requestFocus();
 	}
-   	void listar() {
+
+	void listar() {
 		modelo.setRowCount(0);
 
+		for (int i = 0; i < af.tamanio(); i++) {
+			Object[] fila = { af.obtener(i).getRuc(), af.obtener(i).getEmpresa(), af.obtener(i).getUnidades(),
+					af.obtener(i).getPrecioUnitario(), af.obtener(i).importeFacturado() };
+			modelo.addRow(fila);
+		}
+
 	}
-	//  Métodos tipo void (con parámetros)
+
+	// Mï¿½todos tipo void (con parï¿½metros)
 	void imprimir(String s) {
 		txtS.append(s + "\n");
 	}
+
 	void mensaje(String s) {
 		JOptionPane.showMessageDialog(this, s);
-	}		
-	//  Métodos que retornan valor (sin parámetros)
+	}
+
+	// Mï¿½todos que retornan valor (sin parï¿½metros)
 	String leerRuc() {
 		return txtRuc.getText().trim();
 	}
+
 	String leerEmpresa() {
 		return txtEmpresa.getText().trim();
 	}
+
 	int leerUnidades() {
 		return Integer.parseInt(txtUnidades.getText().trim());
 	}
+
 	double leerPrecio() {
 		return Double.parseDouble(txtPrecio.getText().trim());
 	}
-	
+
 }
